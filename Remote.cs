@@ -21,12 +21,17 @@ namespace image_puzzle
         private bool isImageMove;
         private int imageX;
         private int imageY;
+
+        private Random random;
+        private int rotate;
         public Remote(String imageName, int column, int row)
         {
             InitializeComponent();
             this.imageName = imageName;
             this.row = row;
             this.column = column;
+
+            random = new Random();
             isImageMove = false;
             initImage();
         }
@@ -40,7 +45,6 @@ namespace image_puzzle
             int height = 425 / this.row;
 
             PictureBox[] pictureBoxes = new PictureBox[column * row];
-            Random random = new Random();
 
             for (int i = 0; i < column; i++)
             {
@@ -52,9 +56,6 @@ namespace image_puzzle
 
                     int locationX = Pieces.Location.X + random.Next(0, 425 - width);
                     int locationY = Pieces.Location.Y + random.Next(0, 425 - height);
-
-                    Console.WriteLine(locationX);
-                    Console.WriteLine(locationY);
 
                     Bitmap image = cropImage(resize, x, y);
 
@@ -69,6 +70,13 @@ namespace image_puzzle
                     pictureBoxes[index].MouseDown += new MouseEventHandler(this.imageMouseDown);
                     pictureBoxes[index].MouseUp += new MouseEventHandler(this.imageMouseUp);
                     pictureBoxes[index].MouseMove += new MouseEventHandler(this.imageMouseMove);
+
+                    int rotateRan = random.Next(3);
+                    for(int k=0; k<rotateRan; k++)
+                    {
+                        randomTurnRight(pictureBoxes[index]);
+                    }
+                    
 
                     Pieces.Controls.Add(pictureBoxes[index]);
                     Pieces.Refresh();
@@ -134,6 +142,40 @@ namespace image_puzzle
             PictureBox pictureBox = (PictureBox) sender;
             ControlPaint.DrawBorder(e.Graphics, pictureBox.ClientRectangle, (Color) pictureBox.Tag, ButtonBorderStyle.Solid);
         }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void SubButton_Click(object sender, EventArgs e)
+        {
+            int current = Int32.Parse(currentNumber.Text);
+            current += (row * column) - 1;
+            current %= (row * column);
+            currentNumber.Text = current.ToString();
+        }
+
+        private void PlusButton_Click(object sender, EventArgs e)
+        {
+            int current = Int32.Parse(currentNumber.Text);
+            current += 1;
+            current %= (row * column);
+            currentNumber.Text = current.ToString();
+        }
+
+        private void randomTurnRight(PictureBox pictureBox)
+        {
+            int width = pictureBox.Height;
+            int height = pictureBox.Width;
+
+            pictureBox.Width = width;
+            pictureBox.Height = height;
+
+            pictureBox.Image.RotateFlip(RotateFlipType.Rotate90FlipXY);
+            pictureBox.Refresh();
+        }
+
     }
 }
 

@@ -25,8 +25,6 @@ namespace image_puzzle
         private void Form1_Load(object sender, EventArgs e)
         {
             disnableHelp();
-            this.columnTextBox.Text = "1";
-            this.rowTextBox.Text = "1";
         }
 
         private void startButton_Click(object sender, EventArgs e)
@@ -53,24 +51,8 @@ namespace image_puzzle
 
         private void initRemote()
         {
-            int column = 0;
-            int row = 0;
-
-            try
-            {
-                column = Int32.Parse(this.columnTextBox.Text);
-                row = Int32.Parse(this.rowTextBox.Text);
-            }
-            catch(Exception ex)
-            {
-                
-            }
-
-            if(column == 0 || row == 0)
-            {
-                MessageBox.Show("Bạn nhập số cột hoặc dòng không hợp lý!");
-                return;
-            }
+            int column = (int) this.columnNumber.Value;
+            int row = (int) this.rowNumber.Value;
 
             Point point = new Point();
             point.X = this.Location.X + this.Width;
