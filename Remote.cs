@@ -17,13 +17,17 @@ namespace image_puzzle
         private int column;
         private int row;
 
-        //
         private bool isImageMove;
         private int imageX;
         private int imageY;
 
         private Random random;
         private int rotate;
+
+        private const int R = 15;
+        private const int WIDTH = 425;
+        private const int HEIGHT = 425;
+
         public Remote(String imageName, int column, int row)
         {
             InitializeComponent();
@@ -41,8 +45,8 @@ namespace image_puzzle
             Bitmap bitmap = new Bitmap(imageName);
             Bitmap resize = new Bitmap(bitmap, new Size(425, 425));
 
-            int width = 425 / this.column;
-            int height = 425 / this.row;
+            int width = WIDTH / this.column;
+            int height = HEIGHT / this.row;
 
             PictureBox[] pictureBoxes = new PictureBox[column * row];
 
@@ -50,18 +54,14 @@ namespace image_puzzle
             {
                 for (int j = 0; j < row; j++)
                 {
-                    int x = i * width;
-                    int y = j * height;
+                    int locationX = Pieces.Location.X + random.Next(0, WIDTH - width);
+                    int locationY = Pieces.Location.Y + random.Next(0, HEIGHT - height);
 
-
-                    int locationX = Pieces.Location.X + random.Next(0, 425 - width);
-                    int locationY = Pieces.Location.Y + random.Next(0, 425 - height);
-
-                    Bitmap image = cropImage(resize, x, y);
+                    Bitmap image = cropImage(resize, i, j);
 
                     int index = i * row + j;
                     pictureBoxes[index] = new PictureBox();
-                    pictureBoxes[index].Size = new Size(width, height);
+                    pictureBoxes[index].Size = new Size(width + R, height + R);
                     pictureBoxes[index].Location = new Point(locationX, locationY);
                     pictureBoxes[index].Image = image;
                     pictureBoxes[index].Tag = Color.Black;
@@ -74,7 +74,7 @@ namespace image_puzzle
                     int rotateRan = random.Next(3);
                     for(int k=0; k<rotateRan; k++)
                     {
-                        randomTurnRight(pictureBoxes[index]);
+                        //turnRightPictureBox(pictureBoxes[index]);
                     }
                     
 
@@ -85,21 +85,70 @@ namespace image_puzzle
 
         }
 
-        private Bitmap cropImage(Bitmap source, int x, int y)
+        private Bitmap cropImage(Bitmap source, int i, int j)
         {
-            int width = 425 / this.column;
-            int height = 425 / this.row;
+            int width = WIDTH / this.column;
+            int height = HEIGHT / this.row;
+
+            int x = i * width;
+            int y = j * height;
+
 
             Rectangle rectangle = new Rectangle(x, y, width, height);
-            Bitmap bitmap = new Bitmap(rectangle.Width, rectangle.Height);
+            Bitmap bitmap = new Bitmap(rectangle.Width + R, rectangle.Height + R);
 
             using (Graphics g = Graphics.FromImage(bitmap))
             {
+                
+                // Chốt bên phải nếu không phải hàng phải cùng
+                if(i != this.column - 1){
+                    Bitmap right = new Bitmap(2*R, 2*R);
+                    
+                    Graphics graphics = Graphics.FromImage(right);
+                    graphics.DrawImage(
+                        source,
+                        0, 0, 
+                        new Rectangle(x + width - R,y + height/2 - R, 2*R, 2*R),                        
+                        GraphicsUnit.Pixel);
+
+                    TextureBrush textureBrush = new TextureBrush(right);
+                    g.FillEllipse(textureBrush, new Rectangle(width - R,height/2 - R, 2*R, 2*R));
+                }
+
+                // Chốt bên dưới nếu không phải hàng dưới cùng
+                if(j != this.row - 1){
+                    Bitmap bottom = new Bitmap(2*R, 2*R);
+                    
+                    Graphics graphics = Graphics.FromImage(bottom);
+                    graphics.DrawImage(
+                        source,
+                        0, 0, 
+                        new Rectangle(x + width/2 - R,y + height - R, 2*R, 2*R),                        
+                        GraphicsUnit.Pixel);
+
+                    TextureBrush textureBrush = new TextureBrush(bottom);
+                    g.FillEllipse(textureBrush, new Rectangle(width/2 - R,height - R, 2*R, 2*R));
+                }
+
+                // Vẽ ảnh lên bitmap
                 g.DrawImage(
-                    source,
+                    source, 
                     0, 0,
                     rectangle,
                     GraphicsUnit.Pixel);
+                
+                // Khoét bên trên nếu không phải hàng trên cùng
+                if(j != 0){
+                    Rectangle ellip = new Rectangle(width/2 - R,- R, 2*R, 2*R);
+                    g.FillEllipse(Brushes.White, ellip);
+                }
+
+                // Khoét bên trái nếu không phải hàng trái cùng
+                if( i != 0){
+                    Rectangle ellip = new Rectangle(-R,height/2 - R, 2*R, 2*R);
+                    g.FillEllipse(Brushes.White, ellip);
+                }
+
                 return bitmap;
             }
         }
@@ -164,7 +213,7 @@ namespace image_puzzle
             currentNumber.Text = current.ToString();
         }
 
-        private void randomTurnRight(PictureBox pictureBox)
+        private void turnRightPictureBox(PictureBox pictureBox)
         {
             int width = pictureBox.Height;
             int height = pictureBox.Width;
