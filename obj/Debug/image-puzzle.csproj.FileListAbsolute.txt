@@ -9,3 +9,14 @@ C:\Users\TamVo\source\repos\image-puzzle\image-puzzle\obj\Debug\image-puzzle.csp
 C:\Users\TamVo\source\repos\image-puzzle\image-puzzle\obj\Debug\image-puzzle.exe
 C:\Users\TamVo\source\repos\image-puzzle\image-puzzle\obj\Debug\image-puzzle.pdb
 C:\Users\TamVo\source\repos\image-puzzle\image-puzzle\obj\Debug\image_puzzle.Remote.resources
+C:\Users\ADMIN\Source\Repos\image-puzzle\bin\Debug\image-puzzle.exe.config
+C:\Users\ADMIN\Source\Repos\image-puzzle\bin\Debug\image-puzzle.exe
+C:\Users\ADMIN\Source\Repos\image-puzzle\bin\Debug\image-puzzle.pdb
+C:\Users\ADMIN\Source\Repos\image-puzzle\obj\Debug\image-puzzle.csprojAssemblyReference.cache
+C:\Users\ADMIN\Source\Repos\image-puzzle\obj\Debug\image_puzzle.Form1.resources
+C:\Users\ADMIN\Source\Repos\image-puzzle\obj\Debug\image_puzzle.Properties.Resources.resources
+C:\Users\ADMIN\Source\Repos\image-puzzle\obj\Debug\image_puzzle.Remote.resources
+C:\Users\ADMIN\Source\Repos\image-puzzle\obj\Debug\image-puzzle.csproj.GenerateResource.cache
+C:\Users\ADMIN\Source\Repos\image-puzzle\obj\Debug\image-puzzle.csproj.CoreCompileInputs.cache
+C:\Users\ADMIN\Source\Repos\image-puzzle\obj\Debug\image-puzzle.exe
+C:\Users\ADMIN\Source\Repos\image-puzzle\obj\Debug\image-puzzle.pdb
