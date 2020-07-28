@@ -23,10 +23,13 @@ namespace image_puzzle
 
         private Random random;
         private int rotate;
+        private int itemSelected = 0;
 
         private const int R = 15;
         private const int WIDTH = 425;
         private const int HEIGHT = 425;
+
+        private PictureBox[] pictureBoxes;
 
         public Remote(String imageName, int column, int row)
         {
@@ -38,6 +41,14 @@ namespace image_puzzle
             random = new Random();
             isImageMove = false;
             initImage();
+
+            // Mặc định cái đầu tiên được chọn
+            showPictureBox(itemSelected);
+
+            this.LeftButton.Click +=  new System.EventHandler(this.Left_Click);
+            this.RightButton.Click +=  new System.EventHandler(this.Right_Click);
+            this.UpButton.Click +=  new System.EventHandler(this.Top_Click);
+            this.DownButton.Click +=  new System.EventHandler(this.Bottom_Click);
         }
 
         private void initImage()
@@ -48,7 +59,7 @@ namespace image_puzzle
             int width = WIDTH / this.column;
             int height = HEIGHT / this.row;
 
-            PictureBox[] pictureBoxes = new PictureBox[column * row];
+            pictureBoxes = new PictureBox[column * row];
 
             for (int i = 0; i < column; i++)
             {
@@ -74,7 +85,7 @@ namespace image_puzzle
                     int rotateRan = random.Next(3);
                     for(int k=0; k<rotateRan; k++)
                     {
-                        //turnRightPictureBox(pictureBoxes[index]);
+                        turnRightPictureBox(pictureBoxes[index]);
                     }
                     
 
@@ -82,7 +93,6 @@ namespace image_puzzle
                     Pieces.Refresh();
                 }
             }
-
         }
 
         private Bitmap cropImage(Bitmap source, int i, int j)
@@ -96,6 +106,7 @@ namespace image_puzzle
 
             Rectangle rectangle = new Rectangle(x, y, width, height);
             Bitmap bitmap = new Bitmap(rectangle.Width + R, rectangle.Height + R);
+            bitmap.MakeTransparent();
 
             using (Graphics g = Graphics.FromImage(bitmap))
             {
@@ -168,7 +179,14 @@ namespace image_puzzle
         private void imageMouseUp(object sender, MouseEventArgs e)
         {
             PictureBox pictureBox = (PictureBox)sender;
-            pictureBox.Tag = Color.Black;
+
+            if(pictureBoxes[itemSelected] == pictureBox){
+                pictureBox.Tag = Color.Blue;
+            }
+            else{
+                pictureBox.Tag = Color.Black;
+            }
+
             pictureBox.Refresh();
 
             isImageMove = false;
@@ -194,23 +212,48 @@ namespace image_puzzle
 
         private void button6_Click(object sender, EventArgs e)
         {
+            if(itemSelected < 0 || itemSelected >= this.column * this.row){
+                return;
+            }
 
+            turnRightPictureBox(pictureBoxes[itemSelected]);
         }
 
         private void SubButton_Click(object sender, EventArgs e)
         {
-            int current = Int32.Parse(currentNumber.Text);
-            current += (row * column) - 1;
-            current %= (row * column);
+            int last = Int32.Parse(currentNumber.Text);
+            int current = (last + (row * column) - 1) % (row * column);
+
             currentNumber.Text = current.ToString();
+            // Đánh dấu vị trí chọn
+            itemSelected = current;
+            showPictureBox(current);
+            hidePictureBox(last);
         }
 
         private void PlusButton_Click(object sender, EventArgs e)
         {
-            int current = Int32.Parse(currentNumber.Text);
-            current += 1;
-            current %= (row * column);
+            int last = Int32.Parse(currentNumber.Text);
+            int current = (last + 1) % (row * column);
+            
             currentNumber.Text = current.ToString();
+            // Đánh dấu vị trí chọn
+            itemSelected = current;
+            showPictureBox(current);
+            hidePictureBox(last);
+        }
+
+        private void hidePictureBox(int index){
+            // Đổi màu cái cũ thành màu đen
+            pictureBoxes[index].Tag = Color.Black;
+            pictureBoxes[index].Refresh();
+        }
+
+        private void showPictureBox(int index){
+            // Đổi màu cái được chọn thành màu xanh
+            pictureBoxes[index].Tag = Color.Blue;
+            pictureBoxes[index].Refresh();
+            pictureBoxes[index].BringToFront();
         }
 
         private void turnRightPictureBox(PictureBox pictureBox)
@@ -224,7 +267,31 @@ namespace image_puzzle
             pictureBox.Image.RotateFlip(RotateFlipType.Rotate90FlipXY);
             pictureBox.Refresh();
         }
+        
+        private void Left_Click(object sender, EventArgs e)
+        {
+            PictureBox p = pictureBoxes[itemSelected];
+            p.Left -= 5;
+        }
 
+        private void Right_Click(object sender, EventArgs e)
+        {
+            PictureBox p = pictureBoxes[itemSelected];
+            p.Left += 5;
+        }
+
+        private void Top_Click(object sender, EventArgs e)
+        {
+            PictureBox p = pictureBoxes[itemSelected];
+            p.Top -= 5;
+        }
+
+        private void Bottom_Click(object sender, EventArgs e)
+        {
+            PictureBox p = pictureBoxes[itemSelected];
+            p.Top += 5;
+        }
+        
     }
 }
 
